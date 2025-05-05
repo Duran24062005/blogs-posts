@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Back-End BlogPost in FastAPI Starter</title>
+    <link rel="shortcut icon" href="https://miro.medium.com/v2/resize:fit:786/format:webp/1*dpXAaEpwsJcs2UbZEp5jJw.png"
+        type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            background: #0f172a;
+            /* slate-900 */
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #e2e8f0;
+            /* slate-200 */
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 40px auto;
+            background: #1e293b;
+            /* slate-800 */
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(59, 130, 246, 0.2);
+            /* Blue glow */
+            padding: 40px 32px 32px 32px;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .logo img {
+            height: 96px;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 8px rgba(234, 179, 8, 0.6));
+            /* Yellow glow */
+        }
+
+        .logo h3 {
+            margin: 0;
+            font-size: 2rem;
+            color: #eab308;
+            /* Yellow-500 */
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(234, 179, 8, 0.4);
+        }
+
+        .center {
+            text-align: center;
+            margin-bottom: 24px;
+            color: #cbd5e1;
+            /* slate-300 */
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #f1f5f9;
+            /* slate-100 */
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-top: 32px;
+            margin-bottom: 18px;
+            border-bottom: 2px solid #3b82f6;
+            /* blue-500 */
+            padding-bottom: 8px;
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            margin-top: 28px;
+            margin-bottom: 12px;
+            color: #3b82f6;
+            /* blue-500 */
+        }
+
+        h3 {
+            font-size: 1.1rem;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            color: #ef4444;
+            /* red-500 */
+        }
+
+        p {
+            line-height: 1.7;
+            margin-bottom: 16px;
+        }
+
+        code,
+        pre {
+            background: #334155;
+            /* slate-700 */
+            color: #eab308;
+            /* yellow-500 */
+            border-radius: 6px;
+            padding: 2px 6px;
+            font-size: 1em;
+            box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.3);
+        }
+
+        ul,
+        ol {
+            margin-left: 24px;
+            margin-bottom: 16px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        li strong {
+            color: #3b82f6;
+            /* blue-500 */
+        }
+
+        a {
+            color: #eab308;
+            /* yellow-500 */
+            text-decoration: none;
+            transition: all 0.2s;
+            text-shadow: 0 0 5px rgba(234, 179, 8, 0.3);
+        }
+
+        a:hover {
+            color: #fcd34d;
+            /* yellow-300 */
+            text-decoration: underline;
+            text-shadow: 0 0 8px rgba(234, 179, 8, 0.5);
+        }
+
+        .author {
+            display: block;
+            text-align: right;
+            margin-top: 32px;
+            font-size: 1.1em;
+            color: #ef4444;
+            /* red-500 */
+            text-shadow: 0 0 5px rgba(239, 68, 68, 0.3);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px 10px;
+                padding: 20px 16px;
+                border-radius: 12px;
+            }
+
+            .logo h3 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Add a subtle gradient to the background */
+        .container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(239, 68, 68, 0.05) 100%);
+            border-radius: 18px;
+            pointer-events: none;
+        }
+
+        /* Add a subtle hover effect to list items */
+        li:hover {
+            transform: translateX(3px);
+            transition: transform 0.2s ease;
+        }
+
+        /* Add a subtle border to the container */
+        .container {
+            position: relative;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        /* Documentation button styles */
+        .docs-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin-top: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.5);
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .docs-button:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+            text-decoration: none;
+            color: white;
+        }
+
+        .docs-button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Documentation section highlight */
+        .docs-section {
+            border-left: 4px solid #ef4444;
+            padding-left: 20px;
+            margin: 30px 0;
+            background: rgba(239, 68, 68, 0.05);
+            border-radius: 0 8px 8px 0;
+            padding: 20px 20px 20px 24px;
+        }
+
+        .docs-section h2 {
+            margin-top: 0;
+        }
+
+        /* Documentation image */
+        .docs-image {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 8px;
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        /* Center button container */
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <a href="">
+                <img src="https://miro.medium.com/v2/resize:fit:786/format:webp/1*dpXAaEpwsJcs2UbZEp5jJw.png"
+                    alt="FastAPI Logo">
+                <h3>Back-End BlogPost in FastAPI Starter</h3>
+            </a>
+        </div>
+        <p class="center">
+            BlogPosts backend simple desarrollado en
+            <a href="https://fastapi.tiangolo.com/" target="_blank" rel="noopener">FastAPI</a> as the API backend.
+        </p>
+        <h1>Introduction</h1>
+        <p>
+            En este repositorio encontraras toda una estructura de BackEnd desarrollada en Python utilizando FastAPI,
+            siguiendo convenciones de uso profesional, por lo que te podría servir de guía.
+        </p>
+        <p>
+            Este es un sistema de blogs en el cual se puede hacer un CRUD
+            <code>(Crear = Create, Leer = Read, Actualizar = Update y Borrar = Delete)</code>.
+        </p>
+        <p>
+            Todo esto se logra haciendo peticiones desde el Frontend al Backend, en donde este le hace peticiones
+            mediante protocolo de comunicación. De estos protocolos hay varios como los son el que será utilizado aquí
+            llamado <code>HTTP</code>, los demás protocolos son WebSocket, Socket.io, entre otros.
+        </p>
+        <h2>¿Qué es el protocolo HTTP?</h2>
+        <p>
+            El protocolo HTTP es aquel que define un conjunto de métodos de petición que indican la acción que se desea
+            realizar para un recurso determinado del servidor.
+        </p>
+        <h3>¿Cuáles son los principales métodos?</h3>
+        <p>
+            Los principales métodos soportados por HTTP y por ello usados por una API REST son:
+        </p>
+        <ul>
+            <li><code>POST</code>: crear un recurso nuevo</li>
+            <li><code>PUT</code>: modificar un recurso existente</li>
+            <li><code>GET</code>: consultar información de un recurso</li>
+            <li><code>DELETE</code>: eliminar un recurso</li>
+        </ul>
+        <p>
+            Como te diste cuenta con estos métodos podemos empezar a crear un CRUD en nuestra aplicación.
+        </p>
+        <h3>¿De qué tratará nuestra API?</h3>
+        <p>
+            El proyecto que está aquí construido es una API que nos brindará información relacionada con una serie de
+            blogposts los con los cuales podremos trabajar, por lo que tendremos lo siguiente:
+        </p>
+        <ul>
+            <li>
+                <strong>Consulta de todos los Posts:</strong> Para lograrlo utilizaremos el método <code>GET</code> y
+                solicitaremos todos los datos de nuestros posts.
+            </li>
+            <li>
+                <strong>Filtrado de Posts:</strong> También solicitaremos información de posts por su id y por la
+                categoría a la que pertenecen, para ello utilizaremos el método <code>GET</code> y nos ayudaremos de los
+                parámetros de ruta y los parámetros query.
+            </li>
+            <li>
+                <strong>Registro de posts:</strong> Usaremos el método <code>POST</code> para registrar los datos de
+                nuestros posts y también nos ayudaremos de los esquemas de la librería pydantic para el manejo de los
+                datos.
+            </li>
+            <li>
+                <strong>Modificación y eliminación:</strong> Finalmente para completar nuestro CRUD realizaremos la
+                modificación y eliminación de datos en nuestra aplicación, para lo cual usaremos los métodos
+                <code>PUT</code> y <code>DELETE</code> respectivamente.
+            </li>
+        </ul>
+        <p>
+            Y lo mejor es que todo esto lo estarás construyendo mientras aprendes FastAPI.
+        </p>
+
+        <!-- New Documentation Section -->
+        <div class="docs-section">
+            <h2>Documentación Automática con FastAPI</h2>
+            <p>
+                Una de las características más poderosas de FastAPI es su capacidad para generar documentación
+                automática e interactiva para tu API.
+                Esta documentación se genera utilizando los estándares OpenAPI (anteriormente conocido como Swagger) y
+                se presenta en una interfaz
+                amigable que permite probar directamente los endpoints de tu API.
+            </p>
+            <h3>¿Qué incluye la documentación?</h3>
+            <p>
+                La documentación automática de FastAPI incluye:
+            </p>
+            <ul>
+                <li><strong>Descripción de endpoints:</strong> Todos los endpoints de tu API con sus métodos HTTP
+                    correspondientes.</li>
+                <li><strong>Esquemas de datos:</strong> Modelos de datos utilizados en las peticiones y respuestas.</li>
+                <li><strong>Parámetros:</strong> Descripción de todos los parámetros requeridos y opcionales.</li>
+                <li><strong>Validaciones:</strong> Información sobre las validaciones aplicadas a los datos.</li>
+                <li><strong>Interfaz interactiva:</strong> Posibilidad de probar los endpoints directamente desde el
+                    navegador.</li>
+            </ul>
+            <p>
+                FastAPI genera automáticamente dos interfaces de documentación:
+            </p>
+            <ul>
+                <li><code>/docs</code>: Documentación interactiva usando Swagger UI.</li>
+                <li><code>/redoc</code>: Documentación alternativa usando ReDoc.</li>
+            </ul>
+            <p>
+                Estas interfaces se generan sin necesidad de configuración adicional, simplemente ejecutando tu
+                aplicación FastAPI.
+            </p>
+
+            <img src="https://fastapi.tiangolo.com/img/index/index-03-swagger-02.png"
+                alt="FastAPI Swagger Documentation" class="docs-image">
+
+            <p>
+                La documentación se actualiza automáticamente cada vez que modificas tu código, lo que la mantiene
+                siempre sincronizada con tu API.
+                Esto facilita enormemente el desarrollo y la colaboración con otros desarrolladores que necesiten
+                utilizar tu API.
+            </p>
+        </div>
+
+        <div class="button-container">
+            <a href="/docs" class="docs-button">Ver Documentación API</a>
+        </div>
+
+        <a class="author" href="https://github.com/Duran24062005" target="_blank" rel="noopener">Alexi Dg - python</a>
+    </div>
+</body>
+
+</html>

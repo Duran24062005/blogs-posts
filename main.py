@@ -1,22 +1,32 @@
-from fastapi import FastAPI, Depends, Form
-from sqlalchemy.orm import Session
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
+import os
+from fastapi.responses import FileResponse
+from routes.auth.login import login_router
+from routes.user_routes import user_router
+from routes.posts_routes import posts_router
 
-app = FastAPI()
+app = FastAPI(
+    title="🌐Backend with FastAPI for Posts🖥",
+    description="📂A simple FastAPI application with SQLAlchemy and SQLite⛃",
+    version="1.0.0",
+    # openapi_tags=[
+    #     {
+    #         "name": "users",
+    #         "description": "Operations with users",
+    #     },
+    #     {
+    #         "name": "posts",
+    #         "description": "Operations with posts",
 
-# Dependencia para obtener la sesión de la base de datos
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    #     },
+    # ],
+)
 
-# Ruta para insertar datos mediante un formulario
-@app.post("/users/")
-async def create_user(name: str = Form(...), email: str = Form(...), db: Session = Depends(get_db)):
-    new_user = User(name=name, email=email)
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return JSONResponse(content={"message": "User created", "user": {"name": new_user.name, "email": new_user.email}})
+@app.get("/")
+async def root():
+    file_path = os.path.join(os.path.dirname(__file__), "welcome.html")
+    return FileResponse(file_path)
+
+app.include_router(login_router, prefix="/api/v1/auth")
+app.include_router(user_router, prefix="/api/v1/users") 
+app.include_router(posts_router, prefix="/api/v1/posts")

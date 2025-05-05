@@ -1,0 +1,9 @@
+{
+  "runOnOpen.commands": [
+    {
+      "command": "uvicorn main:app --reload",
+      "cwd": "${workspaceFolder}",
+      "name": "Start FastAPI Server"
+    }
+  ]
+}
